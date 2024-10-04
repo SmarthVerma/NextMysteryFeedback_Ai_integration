@@ -12,7 +12,6 @@ const usernameCheck = (username: string) => {
 // Custom hook to check username availability
 export const useUsernameCheck = ({ username }: { username: string }) => {
   const { toast } = useToast(); // Uncommented to use toast notifications
-  console.log('wtf is going on man i dont kjnw', username)
   return useQuery(["usernameCheck", username], () => usernameCheck(username), {
     onError: (err) => {
       console.error("Error fetching username:", err);

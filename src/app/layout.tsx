@@ -14,12 +14,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>{/* Place other <head> elements here, like meta tags */}</head>
-      <body className="antialiased">
+      <head>
+        <title>BSDK</title>
+      </head>
+      <body className="antialiased ">
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <Toaster />
             {children}
+            <Toaster />
           </AuthProvider>
           <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
         </QueryClientProvider>
