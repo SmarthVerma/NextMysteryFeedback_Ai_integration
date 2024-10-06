@@ -1,67 +1,47 @@
+import { ApiError, ApiResponse } from "@/lib/ApiResponse_Errors";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/user.model";
-import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
+  // Connect to the database
   await dbConnect();
 
   try {
+    console.log('hgereyry')
     const { username, code } = await request.json();
-
     const decodedUsername = decodeURIComponent(username);
     const user = await UserModel.findOne({ username: decodedUsername });
 
     if (!user) {
-      return Response.json(
-        {
-          success: false,
-          message: "User not found",
-        },
-        { status: 404 }
-      );
+      return new ApiError(404, "User not found").getResponse();
     }
 
-    const test = new Date();
-    console.log(`this is the newDate`, test);
-    const isCodeValid = user.verifyCode == code;
+    // Check if the code is correct and not expired
+    const isCodeValid = user.verifyCode === code;
     const isCodeNotExpired = new Date(user.verifyCodeExpiry) > new Date();
 
     if (isCodeValid && isCodeNotExpired) {
+      // Update the user's verification status
       user.isVerified = true;
       await user.save();
 
-      return NextResponse.json(
-        {
-          success: true,
-          message: "User verified successfully",
-        },
-        { status: 200 }
-      );
+      return new ApiResponse(
+        200,
+        {},
+        "Account verified successfully"
+      ).getResponse();
     } else if (!isCodeNotExpired) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Verification code has been expired",
-        },
-        { status: 400 }
-      );
+      // Code has expired
+      return new ApiError(
+        400,
+        "Verification code has expired. Please sign up again to get a new code."
+      ).getResponse();
     } else {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Incorrect verification code",
-        },
-        { status: 400 }
-      );
+      // Code is incorrect
+      return new ApiError(400, "Incorrect verification code").getResponse();
     }
   } catch (error) {
-    console.log("Error in verifying code", error);
-    return Response.json(
-      {
-        success: false,
-        message: "Error Verifying user",
-      },
-      { status: 500 }
-    );
+    console.error("Error verifying user:", error);
+    return new ApiError(500, "Error verifying user").getResponse();
   }
 }

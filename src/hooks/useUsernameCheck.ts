@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useToast } from "@/hooks/use-toast";
 
 // Function to check the username
@@ -13,7 +13,8 @@ const usernameCheck = (username: string) => {
 export const useUsernameCheck = ({ username }: { username: string }) => {
   const { toast } = useToast(); // Uncommented to use toast notifications
   return useQuery(["usernameCheck", username], () => usernameCheck(username), {
-    onError: (err) => {
+    retry: 1,
+    onError: (err: any) => {
       console.error("Error fetching username:", err);
 
       if (axios.isAxiosError(err)) {
@@ -29,7 +30,6 @@ export const useUsernameCheck = ({ username }: { username: string }) => {
         });
       }
     },
-    select: (data) => data.data, // Return only the data from the response
     enabled: !!username, // Only run the query if username is truthy
   });
 };

@@ -1,12 +1,26 @@
 import { z } from "zod";
 
 // Validation schema for sign-up data
+
+
 export const usernameValidation = z
   .string()
-  .min(2, "Username must be at least 2 characters")
+  .min(4, "Username must be at least 4 characters")
   .max(20, "Username cannot be more than 20 characters")
-  .regex(/^[a-zA-Z0-9]+$/, "Username must not contain special characters");
-
+  .refine(
+    (value) => {
+      if (/\s/.test(value)) {
+        return false; // Return false if there are spaces
+      }
+      if (!/^[a-zA-Z0-9]+$/.test(value)) {
+        return false; // Return false if there are special characters
+      }
+      return true; // Return true if both checks are passed
+    },
+    {
+      message: "Username must not contain spaces or special characters",
+    }
+  );
 export const signUpSchema = z.object({
   username: usernameValidation,
   email: z.string().email({ message: "Invalid email address" }),

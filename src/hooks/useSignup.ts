@@ -1,17 +1,20 @@
 import { useMutation, UseMutationResult } from "react-query";
 import axios, { AxiosResponse, AxiosError } from "axios";
 import { useToast } from "@/hooks/use-toast";
-import { signUpSchema } from "@/schemas/signUpSchema";
+import { SignupError, signUpSchema } from "@/schemas/signUpSchema";
 import type { z } from "zod";
 import { SignupApiResult, SignupSuccessData } from "@/schemas/signUpSchema"; // Adjust the import based on your project structure
+import { useRouter } from "next/navigation";
 
 type SignUpSchemaType = z.infer<typeof signUpSchema>;
 
-const signup = (
+const signup = async (
   data: SignUpSchemaType
-): Promise<AxiosResponse<SignupApiResult<SignupSuccessData>>> => {
+): Promise<SignupApiResult<SignupSuccessData>> => {
   const url = `/api/signup`;
-  return axios.post<SignupApiResult<SignupSuccessData>>(url, data);
+  const response: AxiosResponse<SignupApiResult<SignupSuccessData>> =
+    await axios.post(url, data);
+  return response.data; // Return only the `data` from the Axios response
 };
 
 export const useSignup = (): UseMutationResult<
@@ -20,31 +23,36 @@ export const useSignup = (): UseMutationResult<
   SignUpSchemaType // Variables type (input)
 > => {
   const { toast } = useToast();
-  return useMutation<
-    SignupApiResult<SignupSuccessData>,
-    AxiosError,
-    SignUpSchemaType
-  >(signup, {
-    onSuccess: (data) => {
-      if (data.success) {
-        toast({
-          title: "Signup successful",
-          description: "Your username is available!",
-        });
-      } else {
+  const router = useRouter()
+  return useMutation(
+    (data: SignUpSchemaType) => signup(data), // Mutation function
+    {
+      onSuccess: (data) => {
+        if (data.success) {
+          toast({
+            title: "Signup successful",
+            description: "Your username is available!",
+          });
+          const username = data.data.username
+          router.replace(`/verift/${username}`)
+        } else {
+          toast({
+            title: "Signup failed",
+            description: data.message,
+            variant: 'destructive'
+          });
+        }
+    
+      },
+      onError: (error: AxiosError<SignupError>) => {
+        const errorMessage =
+          error?.response?.data?.message || "This username is already taken!";
         toast({
           title: "Signup failed",
-          description: data.message,
+          description: errorMessage,
+          variant: 'destructive'
         });
-      }
-    },
-    onError: (error: AxiosError) => {
-      const errorMessage =
-        error?.response?.data?.message || "This username is already taken!";
-      toast({
-        title: "Signup failed",
-        description: errorMessage,
-      });
-    },
-  });
+      },
+    }
+  );
 };

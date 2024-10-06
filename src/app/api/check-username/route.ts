@@ -12,15 +12,19 @@ export async function GET(request: Request) {
   await dbConnect();
 
   try {
-    const { searchParams } = new URL(request.url);
+    const url = new URL(request.url);
+    const getUsername = url.searchParams.get("username");
+
+    // Prepare the queryParam object
     const queryParam = {
-      username: searchParams.get("username"),
+      username: getUsername // Default to empty string if null
     };
+    console.log(queryParam)
+
 
     // Validate with zod
     const result = usernameQuerySchema.safeParse(queryParam);
     console.log("Validation result:", result);
-
     if (!result.success) {
       const usernameErrors = result.error.format().username?._errors || [];
       return new ApiResponse(

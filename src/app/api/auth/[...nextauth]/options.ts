@@ -5,7 +5,7 @@ import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/user.model";
 
 interface User {
-  _id?: string;
+  _id?: string
   username?: string;
   isVerified?: boolean;
   isAcceptingMessages?: boolean;

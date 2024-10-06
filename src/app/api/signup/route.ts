@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
     if (!emailResponse.success) {
       return new ApiError(500, emailResponse.message).getResponse();
     }
-x
+
     return new ApiResponse(
       200,
       null,
