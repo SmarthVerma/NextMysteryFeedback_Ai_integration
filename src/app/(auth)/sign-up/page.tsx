@@ -62,15 +62,16 @@ export default function Page() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gray-900 p-6">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6 bg-white p-6 rounded-lg shadow-md w-full max-w-md"
+          className="space-y-6 bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md border border-gray-700"
         >
-          {/* Heading */}
-          <h1 className="text-center text-2xl font-bold mb-4 text-gray-800">
-            Welcome to Anonymous Feedbacks
+          {/* Heading with color */}
+          <h1 className="text-center text-2xl font-bold mb-4 text-indigo-400">
+            Welcome to{" "}
+            <span className="tracking-wider">Anonymous Feedbacks</span>
           </h1>
 
           <FormField
@@ -78,14 +79,14 @@ export default function Page() {
             name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-gray-700 font-bold">
-                  Username
+                <FormLabel className="text-indigo-400 font-medium">
+                  Username <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Enter your username"
                     {...field}
-                    className="border border-gray-300 p-2 w-full rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="border-gray-600 bg-gray-700 text-white rounded-md focus:border-gray-500 focus:ring focus:ring-gray-600"
                     onChange={(e) => {
                       field.onChange(e);
                       setUsername(e.target.value);
@@ -94,10 +95,10 @@ export default function Page() {
                 </FormControl>
                 <div className="flex items-center space-x-2 mt-1">
                   {userCheckLoader ? (
-                    <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
+                    <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
                   ) : (
                     <span
-                      className={`text-gray-700 font-semibold ${
+                      className={`font-semibold ${
                         userChecker?.data.message === "Username is unique"
                           ? "text-green-500"
                           : "text-red-400"
@@ -112,7 +113,7 @@ export default function Page() {
                     </span>
                   )}
                 </div>
-                <FormMessage />
+                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
@@ -121,16 +122,18 @@ export default function Page() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-gray-700 font-bold">Email</FormLabel>
+                <FormLabel className="text-indigo-400 font-medium">
+                  Email <span className="text-red-500">*</span>
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Enter your email"
                     type="email"
                     {...field}
-                    className="border border-gray-300 p-2 w-full rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="border-gray-600 bg-gray-700 text-white rounded-md focus:border-gray-500 focus:ring focus:ring-gray-600"
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
@@ -139,30 +142,29 @@ export default function Page() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-gray-700 font-bold">
-                  Password
+                <FormLabel className="text-indigo-400 font-medium">
+                  Password <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Enter your password"
                     type="password"
                     {...field}
-                    className="border border-gray-300 p-2 w-full rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="border-gray-600 bg-gray-700 text-white rounded-md focus:border-gray-500 focus:ring focus:ring-gray-600"
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
           <Button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+            className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 transition-all duration-200"
             disabled={signUpLoader}
           >
             {signUpLoader ? (
               <>
-                {" "}
-                <Loader2 className="animate-spin" /> "Submitting..."{" "}
+                <Loader2 className="animate-spin mr-2" /> Submitting...
               </>
             ) : (
               "Submit"
@@ -171,9 +173,9 @@ export default function Page() {
 
           {/* Already have an account message */}
           <div className="text-center mt-4">
-            <p className="text-gray-600">
+            <p className="text-gray-500">
               Already have an account?{" "}
-              <Link href="/login" className="text-blue-600 hover:underline">
+              <Link href="/login" className="text-indigo-400 hover:underline">
                 Sign in
               </Link>
             </p>

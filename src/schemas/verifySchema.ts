@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // Validation schema for verification data
 export const verifySchema = z.object({
-  username: z.string().min(4, "Username must be at least 4 characters"),
+  username: z.string().min(4, "Username must be at least 4 characters").optional(), // for reactHookForm
   code: z.string().min(6, "Verification code must be at least 6 characters"),
 });
 

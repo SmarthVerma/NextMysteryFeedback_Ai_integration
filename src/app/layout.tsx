@@ -1,6 +1,6 @@
 "use client";
 import "./globals.css";
-import AuthProvider from "./context/AuthProvider";
+import AuthProvider from "@/app/context/AuthProvider";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { ReactQueryDevtools } from "react-query/devtools";
