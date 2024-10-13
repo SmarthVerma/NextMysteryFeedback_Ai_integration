@@ -9,6 +9,8 @@ export async function POST(request: NextRequest) {
   await dbConnect();
   const verifyCode = (Math.floor(Math.random() * 900000) + 100000).toString();
 
+  let responseData; // used to send userDato to apiResponse
+
   try {
     const { username, email, password } = await request.json();
 
@@ -36,10 +38,12 @@ export async function POST(request: NextRequest) {
         ).getResponse();
       } else {
         const hashedPassword = await bcrypt.hash(password, 10);
+        existingUserByEmail.username = username;
         existingUserByEmail.password = hashedPassword;
+        existingUserByEmail.verifyCode = verifyCode;
         existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 360000);
 
-        await existingUserByEmail.save();
+        responseData = await existingUserByEmail.save();
       }
     } else {
       // Create new user
@@ -60,7 +64,7 @@ export async function POST(request: NextRequest) {
         message: [],
       });
 
-      await newUser.save();
+      responseData = await newUser.save();
     }
 
     // Send verification email
@@ -76,7 +80,7 @@ export async function POST(request: NextRequest) {
 
     return new ApiResponse(
       200,
-      null,
+      responseData,
       "User registered successfully. Please verify your email"
     ).getResponse();
   } catch (error) {

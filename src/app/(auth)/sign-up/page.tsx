@@ -58,7 +58,6 @@ export default function Page() {
   // Handle form submission
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     await signup(data);
-    router.replace(`/verify/${data.username}`);
   };
 
   return (
@@ -175,7 +174,7 @@ export default function Page() {
           <div className="text-center mt-4">
             <p className="text-gray-500">
               Already have an account?{" "}
-              <Link href="/login" className="text-indigo-400 hover:underline">
+              <Link href="/sign-in" className="text-indigo-400 hover:underline">
                 Sign in
               </Link>
             </p>

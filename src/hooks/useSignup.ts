@@ -23,34 +23,33 @@ export const useSignup = (): UseMutationResult<
   SignUpSchemaType // Variables type (input)
 > => {
   const { toast } = useToast();
-  const router = useRouter()
+  const router = useRouter();
   return useMutation(
     (data: SignUpSchemaType) => signup(data), // Mutation function
     {
-      onSuccess: (data) => {
+      onSuccess: (data: any) => {
         if (data.success) {
           toast({
             title: "Signup successful",
             description: "Your username is available!",
           });
-          const username = data.data.username
-          router.replace(`/verift/${username}`)
+          console.log('this is data ', data)
+              router.replace(`/verify/${data.data.username}`);
         } else {
           toast({
             title: "Signup failed",
             description: data.message,
-            variant: 'destructive'
+            variant: "destructive",
           });
         }
-    
       },
-      onError: (error: AxiosError<SignupError>) => {
+      onError: (error: AxiosError<any>) => {
         const errorMessage =
-          error?.response?.data?.message || "This username is already taken!";
+          error?.response?.data?.message || "Something went wrong!";
         toast({
           title: "Signup failed",
           description: errorMessage,
-          variant: 'destructive'
+          variant: "destructive",
         });
       },
     }

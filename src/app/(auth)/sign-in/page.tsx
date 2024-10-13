@@ -138,7 +138,7 @@ export default function Page() {
           <div className="text-center mt-4">
             <p className="text-gray-500">
               Don't have an account?{" "}
-              <Link href="/signup" className="text-indigo-400 hover:underline">
+              <Link href="/sign-up" className="text-indigo-400 hover:underline">
                 Sign up
               </Link>
             </p>
