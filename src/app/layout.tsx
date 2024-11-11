@@ -1,28 +1,28 @@
-"use client";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { Toaster } from "@/components/ui/toaster";
-import { ReactQueryDevtools } from "react-query/devtools";
-import { SessionProvider } from "next-auth/react";
-import { Session } from "next-auth"; // Import the extended Session type
+// app/layout.tsx
+import './globals.css';
+import { getServerSession } from "next-auth";
 import { ReactNode } from "react";
+import ClientComponent from "./ClientComponent";
+import { Session } from "next-auth"; // Import the extended Session type
+import { authOptions } from './api/auth/[...nextauth]/options';
 
-interface ClientComponentProps {
-  session: Session | null;  // Define the session prop type
-  children: ReactNode;      // Define the children prop type
-}
 
-export default function ClientComponent({ session, children }: ClientComponentProps) {
-  const queryClient = new QueryClient();
-
+// Server-side component ** FIRST THIS WILL HAPPEEN THEN IT WILL RENDER
+export default async function RootLayout({ children }: { children: ReactNode }): Promise<JSX.Element> {
+  const session: Session | null = await getServerSession(authOptions); // Fetch session on server 
   return (
-    <QueryClientProvider client={queryClient}>
-      <SessionProvider session={session}>
-        <Toaster />
-        {children}  {/* Render the children prop */}
-        {process.env.NODE_ENV === "development" && (
-          <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
-        )}
-      </SessionProvider>
-    </QueryClientProvider>
+
+      <html lang="en">
+        <head>
+          <title>MysteryMessage</title>
+          <meta charSet="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        </head>
+        <body className="antialiased">
+          <ClientComponent session={session}>
+            {children}
+          </ClientComponent>
+        </body>
+      </html>
   );
 }

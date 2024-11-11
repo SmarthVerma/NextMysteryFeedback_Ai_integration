@@ -1,0 +1,1 @@
+export const VerifyFirst_Error_Message = "Error: Please verify your account before log in"

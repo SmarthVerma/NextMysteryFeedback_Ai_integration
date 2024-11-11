@@ -19,19 +19,10 @@ interface DeleteMessageBtnProps {
 }
 
 function DeleteMessageBtn({ id }: DeleteMessageBtnProps) {
-  const [isMounted, setIsMounted] = useState(false);
+  // const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  // If not mounted, return null to avoid hydration issues
-  if (!isMounted) return null;
-
-  // Optionally handle the case where id is not provided
-  if (!id) {
-    console.error("DeleteMessageBtn: id is required for delete functionality.");
-    return null; // You might want to render something else or a message
+  const handleDelete= () => {
+    
   }
 
   return (
@@ -52,7 +43,7 @@ function DeleteMessageBtn({ id }: DeleteMessageBtnProps) {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction className="p-0">
-              <Button variant={"destructive"}>Continue</Button>
+              <Button onClick={handleDelete} variant={"destructive"}>Continue</Button>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

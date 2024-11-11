@@ -3,13 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/user.model";
-
-interface User {
-  _id?: string
-  username?: string;
-  isVerified?: boolean;
-  isAcceptingMessages?: boolean;
-}
+import { User } from "@/models/user.model";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -50,20 +44,24 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async session({ session, token }) {
-      if (token) {
-        session.user._id = token._id;
-        session.user.isVerified = token.isVerified;
-        session.user.username = token.username;
-        session.user.isAcceptingMessages = token.isAcceptingMessages;
+      const userId = token._id;
+      try {
+        const dbUser = (await UserModel.findById(userId)) as User;
+
+        if (token) {
+          session.user = dbUser;
+        }
+      } catch (error) {
+        console.log("Error in session callback: ", error);
       }
+
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
-        token._id = user._id?.toString();
-        token.username = user.username;
-        token.isVerified = user.isVerified;
-        token.isAcceptingMessages = user.isAcceptingMessages;
+        const typedUser = user as User;
+        token._id = typedUser._id?.toString();
+        token.isVerified = typedUser.isVerified;
       }
       return token;
     },

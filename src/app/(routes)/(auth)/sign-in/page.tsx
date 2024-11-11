@@ -20,12 +20,13 @@ import Link from "next/link"; // Import Link for navigation
 import { signInSchema } from "@/schemas/signInSchema";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
+import { VerifyFirst_Error_Message } from "@/constants";
 
 export default function Page() {
   const { toast } = useToast();
   const router = useRouter();
   const [loginLoader, setLoginLoader] = useState(false);
-
+  const [username, setUsername] = useState("")
   // React Hook Form setup
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
@@ -39,6 +40,7 @@ export default function Page() {
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
     setLoginLoader(true);
     try {
+      setUsername(data.username)
       const result = await signIn("credentials", {
         redirect: false,
         username: data.username,
@@ -46,18 +48,22 @@ export default function Page() {
       });
 
       console.log("this the result of signIn from nextAuth", result);
+      console.log('error', result?.error)
 
       if (result?.url) {
         router.replace("/dashboard");
       }
       if (result?.error) {
+        console.log('The result', username)
+          if(result?.error === VerifyFirst_Error_Message) router.replace(`/verify/${username}`);
         toast({
           title: "Login failed",
-          description: `Incorrect username or password, ${result.error}`,
+          description: `${result.error || "Invalid password or username"}`,
           variant: "destructive",
         });
       }
     } catch (error) {
+      console.log("ASDHISAGDIUASGIUFGAIUGSF",)
       console.log("ERROR IN CATCH", error);
     } finally {
       setLoginLoader(false);

@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 import { boolean } from "zod";
 
 export interface Message extends Document {
+  _id: mongoose.Types.ObjectId; // Add _id field explicitly
   content: string;
   createdAt: Date;
 }
