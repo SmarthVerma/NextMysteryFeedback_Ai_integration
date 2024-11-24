@@ -7,7 +7,7 @@ import { ReactNode, useMemo } from "react";
 import { Provider } from "react-redux";
 import { store } from "@/lib/store/store";
 import { SessionProvider } from "next-auth/react";
-import StoreSessionRedux from "@/context/StoreSessionRedux";
+// import StoreSessionRedux from "@/context/StoreSessionRedux";
 
 interface ClientComponentProps {
   session: Session | null;

@@ -1,4 +1,4 @@
-"use client"
+// "use client"
 import Navbar from "@/components/tier1/Navbar";
 import Head from "next/head";
 

@@ -1,7 +1,7 @@
 import { useMutation, UseMutationResult } from "react-query";
 import axios, { AxiosResponse, AxiosError } from "axios";
 import { useToast } from "@/hooks/use-toast";
-import { SignupError, signUpSchema } from "@/schemas/signUpSchema";
+import { signUpSchema } from "@/schemas/signUpSchema";
 import type { z } from "zod";
 import { SignupApiResult, SignupSuccessData } from "@/schemas/signUpSchema"; // Adjust the import based on your project structure
 import { useRouter } from "next/navigation";
@@ -11,7 +11,7 @@ type SignUpSchemaType = z.infer<typeof signUpSchema>;
 const signup = async (
   data: SignUpSchemaType
 ): Promise<SignupApiResult<SignupSuccessData>> => {
-  const url = `/api/signup`;
+  const url = `/api/auth/signup`;
   const response: AxiosResponse<SignupApiResult<SignupSuccessData>> =
     await axios.post(url, data);
   return response.data; // Return only the `data` from the Axios response

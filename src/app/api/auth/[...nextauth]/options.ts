@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/models/user.model";
 import { User } from "@/models/user.model";
+import { ApiError, ApiResponse } from "@/lib/ApiResponse_Errors";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -16,17 +17,17 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials: any): Promise<any> {
         await dbConnect();
+        console.log({credentials})
         try {
           const user = await UserModel.findOne({
             $or: [
-              { email: credentials.email },
+              { email: credentials.username },
               { username: credentials.username },
             ],
-          });
+          }) as User 
 
           if (!user) throw new Error("User not found with this email");
-          if (!user.isVerified)
-            throw new Error("Please verify your account before log in");
+          if (!user.isVerified) throw new Error(`Please verify your account before log in id: ${user._id}`)
 
           const isPasswordCorrect = await bcrypt.compare(
             credentials.password,

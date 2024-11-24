@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpSchema } from "@/schemas/signUpSchema";
 import { Button } from "@/components/ui/button";
 import { useSignup } from "@/hooks/useSignup";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import {
   FormControl,
   Form,
@@ -23,11 +23,11 @@ import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import Link from "next/link"; // Import Link for navigation
 
-export default function Page() {
+export default function Signup() {
   const [username, setUsername] = useState("");
   const [debouncedUsername] = useDebounceValue(username, 300);
   const { toast } = useToast();
-  const router = useRouter();
+  // const router = useRouter();
 
   // Username check API call
   const {
@@ -61,31 +61,32 @@ export default function Page() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 p-6">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 p-6">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6 bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md border border-gray-700"
+          className="space-y-6 bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-gray-200"
         >
-          {/* Heading with color */}
-          <h1 className="text-center text-2xl font-bold mb-4 text-indigo-400">
+          {/* Heading */}
+          <h1 className="text-center text-3xl font-bold mb-6 text-indigo-600">
             Welcome to{" "}
-            <span className="tracking-wider">Anonymous Feedbacks</span>
+            <span className="tracking-wide">Anonymous Feedback</span>
           </h1>
 
+          {/* Username Field */}
           <FormField
             control={form.control}
             name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-indigo-400 font-medium">
+                <FormLabel className="text-indigo-600 font-medium">
                   Username <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Enter your username"
                     {...field}
-                    className="border-gray-600 bg-gray-700 text-white rounded-md focus:border-gray-500 focus:ring focus:ring-gray-600"
+                    className="border-gray-300 bg-gray-100 text-gray-800 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 transition duration-300"
                     onChange={(e) => {
                       field.onChange(e);
                       setUsername(e.target.value);
@@ -97,11 +98,10 @@ export default function Page() {
                     <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
                   ) : (
                     <span
-                      className={`font-semibold ${
-                        userChecker?.data.message === "Username is unique"
+                      className={`font-semibold ${userChecker?.data.message === "Username is unique"
                           ? "text-green-500"
                           : "text-red-400"
-                      }`}
+                        }`}
                     >
                       {userChecker?.data.message}
                     </span>
@@ -116,12 +116,14 @@ export default function Page() {
               </FormItem>
             )}
           />
+
+          {/* Email Field */}
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-indigo-400 font-medium">
+                <FormLabel className="text-indigo-600 font-medium">
                   Email <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
@@ -129,19 +131,21 @@ export default function Page() {
                     placeholder="Enter your email"
                     type="email"
                     {...field}
-                    className="border-gray-600 bg-gray-700 text-white rounded-md focus:border-gray-500 focus:ring focus:ring-gray-600"
+                    className="border-gray-300 bg-gray-100 text-gray-800 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 transition duration-300"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
+
+          {/* Password Field */}
           <FormField
             control={form.control}
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-indigo-400 font-medium">
+                <FormLabel className="text-indigo-600 font-medium">
                   Password <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
@@ -149,16 +153,18 @@ export default function Page() {
                     placeholder="Enter your password"
                     type="password"
                     {...field}
-                    className="border-gray-600 bg-gray-700 text-white rounded-md focus:border-gray-500 focus:ring focus:ring-gray-600"
+                    className="border-gray-300 bg-gray-100 text-gray-800 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 transition duration-300"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
+
+          {/* Submit Button */}
           <Button
             type="submit"
-            className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 transition-all duration-200"
+            className="w-full bg-indigo-500 text-white py-3 rounded-md hover:bg-indigo-600 transition-all duration-200 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
             disabled={signUpLoader}
           >
             {signUpLoader ? (
@@ -174,7 +180,7 @@ export default function Page() {
           <div className="text-center mt-4">
             <p className="text-gray-500">
               Already have an account?{" "}
-              <Link href="/sign-in" className="text-indigo-400 hover:underline">
+              <Link href="/sign-in" className="text-indigo-500 hover:underline">
                 Sign in
               </Link>
             </p>

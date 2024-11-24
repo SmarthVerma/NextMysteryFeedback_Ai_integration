@@ -3,11 +3,11 @@ import { ApiError, ApiResponse } from "@/lib/ApiResponse_Errors";
 import dbConnect from "@/lib/dbConnect";
 import UserModel, { User } from "@/models/user.model";
 import bcrypt from "bcryptjs";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
   await dbConnect();
-  const verifyCode = (Math.floor(Math.random() * 900000) + 100000).toString();
+  const verifyCode =  Math.floor(100000 + Math.random() * 900000).toString();
 
   let responseData; // used to send userDato to apiResponse
 
@@ -52,9 +52,10 @@ export async function POST(request: NextRequest) {
       const expiryTime = new Date(
         currentTime.setHours(currentTime.getHours() + 1)
       );
-
+      const usernameLower = username as string
+      console.log({usernameLower})
       const newUser = new UserModel({
-        username,
+        username: usernameLower.toLowerCase(),
         email,
         password: hashedPassword,
         verifyCode,
@@ -70,9 +71,11 @@ export async function POST(request: NextRequest) {
     // Send verification email
     const emailResponse = await sendVerificationEmail(
       email,
-      username,
-      verifyCode
+      responseData._id,
+      responseData.verifyCode as string
     );
+
+    console.log({emailResponse})
 
     if (!emailResponse.success) {
       return new ApiError(500, emailResponse.message).getResponse();
@@ -83,8 +86,8 @@ export async function POST(request: NextRequest) {
       responseData,
       "User registered successfully. Please verify your email"
     ).getResponse();
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error registering user", error);
-    return new ApiError(500, "Error registering user").getResponse();
+    return new ApiError(500, `Error registering user ${error.message}`).getResponse();
   }
 }

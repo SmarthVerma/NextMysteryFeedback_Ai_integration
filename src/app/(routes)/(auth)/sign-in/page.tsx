@@ -22,11 +22,10 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { VerifyFirst_Error_Message } from "@/constants";
 
-export default function Page() {
+export default function Signin() {
   const { toast } = useToast();
   const router = useRouter();
   const [loginLoader, setLoginLoader] = useState(false);
-  const [username, setUsername] = useState("")
   // React Hook Form setup
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
@@ -40,46 +39,43 @@ export default function Page() {
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
     setLoginLoader(true);
     try {
-      setUsername(data.username)
       const result = await signIn("credentials", {
         redirect: false,
         username: data.username,
         password: data.password,
       });
 
-      console.log("this the result of signIn from nextAuth", result);
-      console.log('error', result?.error)
 
       if (result?.url) {
         router.replace("/dashboard");
       }
-      if (result?.error) {
-        console.log('The result', username)
-          if(result?.error === VerifyFirst_Error_Message) router.replace(`/verify/${username}`);
+      if (result?.error as string) {
+        if (result?.error?.startsWith(VerifyFirst_Error_Message)) {
+          router.replace(`/verify/${result?.error?.split('id:')[1].trim()}`);
+        }
         toast({
           title: "Login failed",
-          description: `${result.error || "Invalid password or username"}`,
+          description: `${result?.error || "Invalid password or username"}`,
           variant: "destructive",
         });
       }
     } catch (error) {
-      console.log("ASDHISAGDIUASGIUFGAIUGSF",)
-      console.log("ERROR IN CATCH", error);
+      console.log("ERROR IN CATCH in signin", error);
     } finally {
       setLoginLoader(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 p-6">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 p-6">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6 bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md border border-gray-700"
+          className="space-y-6 bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-gray-200"
         >
           {/* Heading */}
-          <h1 className="text-center text-2xl font-bold mb-4 text-indigo-400">
-            Welcome to <span className="tracking-wider">Anonymous Feedbacks</span>
+          <h1 className="text-center text-3xl font-bold mb-6 text-indigo-600">
+            Welcome to <span className="tracking-wide">Anonymous Feedback</span>
           </h1>
 
           {/* Identifier Field (Username/Email) */}
@@ -88,14 +84,14 @@ export default function Page() {
             name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-indigo-400 font-medium">
-                  Username
+                <FormLabel className="text-indigo-600 font-medium">
+                  Username or Email
                 </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Enter your username or email"
                     {...field}
-                    className="border-gray-600 bg-gray-700 text-white rounded-md focus:border-gray-500 focus:ring focus:ring-gray-600"
+                    className="border-gray-300 bg-gray-100 text-gray-800 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 transition duration-300"
                   />
                 </FormControl>
                 <FormMessage />
@@ -109,7 +105,7 @@ export default function Page() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-indigo-400 font-medium">
+                <FormLabel className="text-indigo-600 font-medium">
                   Password
                 </FormLabel>
                 <FormControl>
@@ -117,7 +113,7 @@ export default function Page() {
                     placeholder="Enter your password"
                     type="password"
                     {...field}
-                    className="border-gray-600 bg-gray-700 text-white rounded-md focus:border-gray-500 focus:ring focus:ring-gray-600"
+                    className="border-gray-300 bg-gray-100 text-gray-800 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 transition duration-300"
                   />
                 </FormControl>
                 <FormMessage />
@@ -128,7 +124,7 @@ export default function Page() {
           {/* Submit Button */}
           <Button
             type="submit"
-            className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 transition-all duration-200"
+            className="w-full bg-indigo-500 text-white py-3 rounded-md hover:bg-indigo-600 transition-all duration-200 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
             disabled={loginLoader}
           >
             {loginLoader ? (
@@ -144,7 +140,7 @@ export default function Page() {
           <div className="text-center mt-4">
             <p className="text-gray-500">
               Don't have an account?{" "}
-              <Link href="/sign-up" className="text-indigo-400 hover:underline">
+              <Link href="/sign-up" className="text-indigo-500 hover:underline">
                 Sign up
               </Link>
             </p>

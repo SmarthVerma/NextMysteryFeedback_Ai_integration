@@ -14,7 +14,7 @@ const verifyCode = async (
   data: VerificationCodeData
 ): Promise<AxiosResponse<VerificationApiResult<VerificationSuccessData>>> => {
   console.log("Submitting data for verification:", data);
-  const url = `/api/verifycode/`;
+  const url = `/api/auth/verifycode/`;
   return await axios.post(url, data);
 };
 

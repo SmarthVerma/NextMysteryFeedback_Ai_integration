@@ -8,7 +8,7 @@ export async function POST(request: Request) {
 
   try {
     const { username, code } = await request.json();
-    console.log(username, code)
+    console.log(username, code);
     const decodedUsername = decodeURIComponent(username);
     const user = await UserModel.findOne({ username: decodedUsername });
 
@@ -18,13 +18,15 @@ export async function POST(request: Request) {
 
     // Check if the code is correct and not expired
     const isCodeValid = user.verifyCode === code;
-    const isCodeNotExpired = new Date(user.verifyCodeExpiry) > new Date();
-    console.log(user.verifyCode,)
-    console.log(isCodeValid, isCodeNotExpired)
+    const isCodeNotExpired = new Date(user?.verifyCodeExpiry as Date) > new Date();
+    console.log(user.verifyCode);
+    console.log(isCodeValid, isCodeNotExpired);
 
     if (isCodeValid && isCodeNotExpired) {
-      // Update the user's verification status
+      // Update the user's verification status and clear the verification data
       user.isVerified = true;
+      user.verifyCode = null; // Clear the verification code
+      user.verifyCodeExpiry = null; // Clear the expiry date
       await user.save();
 
       return new ApiResponse(

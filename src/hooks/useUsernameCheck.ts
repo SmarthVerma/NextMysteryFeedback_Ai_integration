@@ -1,11 +1,10 @@
-import React from "react";
 import { useQuery } from "react-query";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 
 // Function to check the username
 const usernameCheck = (username: string) => {
-  const url = `/api/check-username?username=${username}`;
+  const url = `/api/auth/check-username?username=${username}`;
   return axios.get(url);
 };
 

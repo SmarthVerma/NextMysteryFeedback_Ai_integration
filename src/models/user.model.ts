@@ -1,5 +1,4 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { boolean } from "zod";
 
 export interface Message extends Document {
   _id: mongoose.Types.ObjectId; // Add _id field explicitly
@@ -23,8 +22,8 @@ export interface User extends Document {
   username: string;
   email: string;
   password: string;
-  verifyCode: string;
-  verifyCodeExpiry: Date;
+  verifyCode: string | null;
+  verifyCodeExpiry: Date| null;
   isVerified: boolean;
   isAcceptingMessage: boolean;
   message: Message[];
@@ -52,13 +51,19 @@ const userSchema: Schema<User> = new Schema({
   },
   verifyCode: {
     type: String,
+    default: null,
     required: [true, "Verify code is required"],
   },
   verifyCodeExpiry: {
     type: Date,
+        default: null,
     required: [true, "Verification expiry is required"],
   },
   isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  isAcceptingMessage: {
     type: Boolean,
     default: false,
   },
@@ -67,7 +72,7 @@ const userSchema: Schema<User> = new Schema({
       type: messageSchema,
     },
   ],
-});     
+});
 
 const UserModel = (mongoose.models.User as mongoose.Model<User>) || mongoose.model<User>('User', userSchema)
 
