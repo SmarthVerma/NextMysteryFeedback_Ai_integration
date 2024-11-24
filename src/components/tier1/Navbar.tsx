@@ -1,46 +1,53 @@
 "use client";
-import { signOut } from "next-auth/react";
-import React from "react";
+import { signOut, useSession } from "next-auth/react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { useSelector } from "react-redux";
-import { useRouter } from "next/router";
 import { RootState } from "@/lib/store/store";
+import { usePathname } from "next/navigation";
 
 function Navbar() {
-  // const router = useRouter()
+  const pathname = usePathname();
   const userData = useSelector((state: RootState) => state.session);
-  // const currentUrl = `${window.location.origin}`;
-  // console.log("Thisi is base", router.pathname);
-  console.log('this is userData', userData.isAuthenticated)
+
+  const [onLogin, setOnLogin] = useState(false);
+
+  const { data, status } = useSession()
+  useEffect(() => {
+    // Update `onLogin` based on the current URL pathname
+    setOnLogin(pathname?.endsWith("/sign-in") ?? false);
+  }, [pathname]);
 
   return (
-    <nav className="bg-slate-800 p-4 shadow-md">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link
-          href="/"
-          className="text-white text-2xl font-bold hover:text-gray-300" 
-        >
+    <nav className="bg-slate-800 fixed left-0 right-0 p-4 shadow-md">
+      <div className=" mx-auto flex justify-between items-center">
+        <Link href="/" className="text-white text-2xl font-bold hover:text-gray-300">
           Mystery Feedback
         </Link>
 
-        {userData.isAuthenticated ? (
+        {data ? (
           <>
-            <Button>
-              <Link href="/dashboard">Dashboard</Link>
-            </Button>
-            <Button
-              type="button"
-              onClick={() => signOut()}
-              className="bg-red-600 hover:bg-red-500 text-white font-semibold py-2 px-4 rounded-xl transition duration-200"
-            >
-              Log out
-            </Button>
+            <div className="space-x-4">
+
+              <Button>
+                <Link href="/dashboard">Dashboard</Link>
+              </Button>
+              <Button
+                type="button"
+                onClick={() => signOut()}
+                className="bg-red-600 hover:bg-red-500 text-white font-semibold py-2 px-4 rounded-xl transition duration-200"
+              >
+                Log out
+              </Button>
+            </div>
           </>
         ) : (
-          <Button className="px-6 bg-indigo-500 rounded-xl font-bold">
-            <Link href="/sign-in">Log in</Link>
-          </Button>
+          <Link href={onLogin ? "/sign-up" : "/sign-in"}>
+            <Button className="px-6 bg-indigo-500 rounded-xl font-bold">
+              {onLogin ? "Sign up" : "Log in"}
+            </Button>
+          </Link>
         )}
       </div>
     </nav>

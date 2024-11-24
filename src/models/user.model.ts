@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface Message extends Document {
-  _id: mongoose.Types.ObjectId; // Add _id field explicitly
+  _id: mongoose.Types.ObjectId | string // Add _id field explicitly
   content: string;
   createdAt: Date;
 }
@@ -52,12 +52,10 @@ const userSchema: Schema<User> = new Schema({
   verifyCode: {
     type: String,
     default: null,
-    required: [true, "Verify code is required"],
   },
   verifyCodeExpiry: {
     type: Date,
         default: null,
-    required: [true, "Verification expiry is required"],
   },
   isVerified: {
     type: Boolean,

@@ -21,12 +21,15 @@ import { signInSchema } from "@/schemas/signInSchema";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { VerifyFirst_Error_Message } from "@/constants";
+import { useMutation } from "react-query";
+import { useResendVerificationCode } from "@/hooks/useResendCode";
 
 export default function Signin() {
   const { toast } = useToast();
   const router = useRouter();
   const [loginLoader, setLoginLoader] = useState(false);
-  // React Hook Form setup
+  const { mutate: resendCode, isLoading } = useResendVerificationCode();
+
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -44,13 +47,13 @@ export default function Signin() {
         username: data.username,
         password: data.password,
       });
-
-
       if (result?.url) {
         router.replace("/dashboard");
       }
       if (result?.error as string) {
         if (result?.error?.startsWith(VerifyFirst_Error_Message)) {
+          const res = await resendCode(data.username)
+          console.log('this is res',)
           router.replace(`/verify/${result?.error?.split('id:')[1].trim()}`);
         }
         toast({
@@ -74,7 +77,7 @@ export default function Signin() {
           className="space-y-6 bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-gray-200"
         >
           {/* Heading */}
-          <h1 className="text-center text-3xl font-bold mb-6 text-indigo-600">
+          <h1 className="text-center text-3xl font-bold mb-6 text-[#1E293B]">
             Welcome to <span className="tracking-wide">Anonymous Feedback</span>
           </h1>
 
@@ -84,7 +87,7 @@ export default function Signin() {
             name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-indigo-600 font-medium">
+                <FormLabel className="font-bold">
                   Username or Email
                 </FormLabel>
                 <FormControl>
@@ -105,7 +108,7 @@ export default function Signin() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-indigo-600 font-medium">
+                <FormLabel className="font-bold">
                   Password
                 </FormLabel>
                 <FormControl>
@@ -124,7 +127,7 @@ export default function Signin() {
           {/* Submit Button */}
           <Button
             type="submit"
-            className="w-full bg-indigo-500 text-white py-3 rounded-md hover:bg-indigo-600 transition-all duration-200 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="w-full bg-[#1E293B] text-white py-3 rounded-md hover:bg-indigo-600 transition-all duration-200 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
             disabled={loginLoader}
           >
             {loginLoader ? (

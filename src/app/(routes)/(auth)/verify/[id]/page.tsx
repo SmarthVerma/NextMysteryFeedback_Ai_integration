@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useVerifyCode } from "@/hooks/useVerifyCode";
 import { verifySchema } from "@/schemas/verifySchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Rss } from "lucide-react";
 import { useParams } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -24,7 +25,7 @@ type VerificationCodeData = z.infer<typeof verifySchema>;
 
 function Page() {
   // UseParams for extracting username from the URL
-  const { username } = useParams<{ username: string }>();
+  const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
   const { mutate: verifyCode, isLoading } = useVerifyCode();
 
@@ -33,16 +34,18 @@ function Page() {
     resolver: zodResolver(verifySchema),
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: z.infer<typeof verifySchema>) => {
     try {
       const input = {
-        username,
+        id,
         code: data.code,
       };
-      verifyCode(input);
+      console.log('this in input: ', {input})
+      const res = await verifyCode(input);
+      console.log('this is res in verifyCode page', res)
       toast({
         title: "Verification Code Submitted",
-        description: `The verification code for ${username} has been successfully submitted.`,
+        description: `The verification code for ${id} has been successfully submitted.`,
       });
     } catch (error) {
       console.error("Error verifying the code", error);

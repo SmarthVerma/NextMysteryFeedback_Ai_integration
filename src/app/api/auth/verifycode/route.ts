@@ -7,10 +7,10 @@ export async function POST(request: Request) {
   await dbConnect();
 
   try {
-    const { username, code } = await request.json();
-    console.log(username, code);
-    const decodedUsername = decodeURIComponent(username);
-    const user = await UserModel.findOne({ username: decodedUsername });
+    const { id, code } = await request.json();
+    console.log(id, code);
+    const decodedUsername = decodeURIComponent(id);
+    const user = await UserModel.findOne({ _id: decodedUsername });
 
     if (!user) {
       return new ApiError(404, "User not found").getResponse();
@@ -44,8 +44,8 @@ export async function POST(request: Request) {
       // Code is incorrect
       return new ApiError(400, "Incorrect verification code").getResponse();
     }
-  } catch (error) {
-    console.error("Error verifying user:", error);
+  } catch (error: any) {
+    console.error("Error verifying user:", error.message);
     return new ApiError(500, "Error verifying user").getResponse();
   }
 }

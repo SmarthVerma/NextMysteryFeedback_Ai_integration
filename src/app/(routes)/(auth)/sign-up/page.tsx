@@ -68,7 +68,7 @@ export default function Signup() {
           className="space-y-6 bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-gray-200"
         >
           {/* Heading */}
-          <h1 className="text-center text-3xl font-bold mb-6 text-indigo-600">
+          <h1 className="text-center text-3xl font-bold mb-6 text-[#1E293B]">
             Welcome to{" "}
             <span className="tracking-wide">Anonymous Feedback</span>
           </h1>
@@ -79,7 +79,7 @@ export default function Signup() {
             name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-indigo-600 font-medium">
+                <FormLabel className="text-[#1E293B] font-medium">
                   Username <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
@@ -123,7 +123,7 @@ export default function Signup() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-indigo-600 font-medium">
+                <FormLabel className="text-[#1E293B] font-medium">
                   Email <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
@@ -145,7 +145,7 @@ export default function Signup() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-indigo-600 font-medium">
+                <FormLabel className="text-[#1E293B] font-medium">
                   Password <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
@@ -164,7 +164,7 @@ export default function Signup() {
           {/* Submit Button */}
           <Button
             type="submit"
-            className="w-full bg-indigo-500 text-white py-3 rounded-md hover:bg-indigo-600 transition-all duration-200 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="w-full bg-[#1E293B] text-white py-3 rounded-md hover:bg-indigo-600 transition-all duration-200 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
             disabled={signUpLoader}
           >
             {signUpLoader ? (

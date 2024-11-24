@@ -13,7 +13,7 @@ export type VerificationCodeData = z.infer<typeof verifySchema>;
 const verifyCode = async (
   data: VerificationCodeData
 ): Promise<AxiosResponse<VerificationApiResult<VerificationSuccessData>>> => {
-  console.log("Submitting data for verification:", data);
+  console.log("Submitting data for verification:", {data});
   const url = `/api/auth/verifycode/`;
   return await axios.post(url, data);
 };
